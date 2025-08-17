@@ -42,12 +42,12 @@ User Features:
 
 ---
 
-## 👥 Recommended Team Structure
+## 👥 Team Structure
 
-### **Team A: Backend Foundation (2 developers)**
+### **Team Backend: Backend Foundation (2 developers)**
 **Focus**: Core infrastructure and data management
 
-#### **Developer A1: Data & Infrastructure Lead**
+#### **Developer Backend_Lebron: Data & Infrastructure Lead**
 **Primary Modules**: DataModule + DevOps
 **Responsibilities**:
 - Financial data API integration (Yahoo Finance, Alpha Vantage)
@@ -56,7 +56,7 @@ User Features:
 - Docker configuration and deployment
 - API rate limiting and data quality validation
 
-#### **Developer A2: Authentication & Security Lead**
+#### **Developer Backend_Luka: Authentication & Security Lead**
 **Primary Modules**: UserModule + Security
 **Responsibilities**:
 - User authentication system (JWT)
@@ -67,9 +67,9 @@ User Features:
 
 ---
 
-### **Team B: Core Business Logic (2 developers)**
+### **Team Business: Core Business Logic (2 developers)**
 
-#### **Developer B1: DCF Engine Lead**
+#### **Developer Business_Austin: DCF Engine Lead**
 **Primary Modules**: DcfModule (Most Complex)
 **Responsibilities**:
 - Multi-scenario DCF calculations (worst/base/best case)
@@ -78,7 +78,7 @@ User Features:
 - Terminal value calculations
 - Calculation validation and testing
 
-#### **Developer B2: Portfolio & Reports Lead**
+#### **Developer Business_Rui: Portfolio & Reports Lead**
 **Primary Modules**: PortfolioModule + ReportModule
 **Responsibilities**:
 - Portfolio creation and management
@@ -89,9 +89,9 @@ User Features:
 
 ---
 
-### **Team C: Frontend & User Experience (2-3 developers)**
+### **Team FrontEnd: Frontend & User Experience (2-3 developers)**
 
-#### **Developer C1: Authentication & User Interface Lead**
+#### **Developer FrontEnd_Ayton: Authentication & User Interface Lead**
 **Primary Focus**: User management frontend
 **Responsibilities**:
 - Login/registration interface
@@ -100,7 +100,7 @@ User Features:
 - Responsive design implementation
 - User experience optimization
 
-#### **Developer C2: DCF Analysis Interface Lead**
+#### **Developer FrontEnd_Hayes: DCF Analysis Interface Lead**
 **Primary Focus**: Core analysis interface
 **Responsibilities**:
 - Stock search and selection interface
@@ -109,7 +109,7 @@ User Features:
 - Scenario comparison interface
 - Real-time data display
 
-#### **Developer C3: Portfolio & Dashboard Lead**
+#### **Developer FrontEnd_Marcus: Portfolio & Dashboard Lead**
 **Primary Focus**: Portfolio management interface
 **Responsibilities**:
 - Portfolio dashboard and overview
@@ -120,9 +120,9 @@ User Features:
 
 ---
 
-### **Team D: Integration & Quality (1 developer)**
+### **Team Integration: Integration & Quality (1 developer)**
 
-#### **Developer D1: Full-Stack Integration Lead**
+#### **Developer Integration_JJ: Full-Stack Integration Lead**
 **Primary Focus**: System integration and testing
 **Responsibilities**:
 - Module integration testing
