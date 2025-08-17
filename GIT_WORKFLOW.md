@@ -12,16 +12,38 @@ main (production-ready code)
 ├── staging (pre-production testing)
 ```
 
-### **Feature Branches by Developer**
+### **Developer Branches (Already Created)**
 ```
-feature/backend-lebron-*     (Backend_Lebron - Data & Infrastructure)
-feature/backend-luka-*       (Backend_Luka - Authentication & Security)
-feature/business-austin-*    (Business_Austin - DCF Engine)
-feature/business-rui-*       (Business_Rui - Portfolio Management)
-feature/frontend-ayton-*     (FrontEnd_Ayton - Auth & UI)
-feature/frontend-hayes-*     (FrontEnd_Hayes - Dashboard & Analytics)
-feature/frontend-marcus-*    (FrontEnd_Marcus - Portfolio UI)
-feature/integration-jj-*     (Integration_JJ - Testing & QA)
+main (production-ready code)
+├── develop (integration branch)
+├── Ayton          (FrontEnd_Ayton - Auth & UI)
+├── Hayes          (FrontEnd_Hayes - Dashboard & Analytics)  
+├── Marcus         (FrontEnd_Marcus - Portfolio UI)
+├── Lebron         (Backend_Lebron - Data & Infrastructure)
+├── Luka           (Backend_Luka - Authentication & Security)
+├── Austin         (Business_Austin - DCF Engine)
+├── Rui            (Business_Rui - Portfolio Management)
+└── JJ             (Integration_JJ - Testing & QA)
+```
+
+### **Feature Sub-branches (When Needed)**
+```
+Ayton/auth-components        (specific features within Ayton's work)
+Ayton/user-dashboard
+Hayes/main-dashboard
+Hayes/analytics-charts
+Marcus/portfolio-views
+Marcus/investment-forms
+Lebron/database-setup
+Lebron/data-api
+Luka/jwt-auth
+Luka/security-middleware
+Austin/dcf-calculations
+Austin/financial-models
+Rui/portfolio-crud
+Rui/performance-analytics
+JJ/ci-pipeline
+JJ/integration-tests
 ```
 
 ---
@@ -79,15 +101,18 @@ feature/integration-jj-performance-tests
 
 ### **Morning Routine (9:00 AM)**
 ```bash
-# 1. Start your day - sync with latest changes
-git checkout develop
-git pull origin develop
+# 1. Start your day - switch to your personal branch
+git checkout [YourName]
+git pull origin [YourName]
 
-# 2. Create your daily feature branch
-git checkout -b feature/[your-name]-[task-description]
+# 2. Sync with latest develop changes
+git fetch origin develop
+git merge origin/develop
 
-# Example for Backend_Lebron:
-git checkout -b feature/backend-lebron-user-data-api
+# Example for Ayton:
+git checkout Ayton
+git pull origin Ayton
+git merge origin/develop
 ```
 
 ### **During Development**
@@ -101,8 +126,11 @@ git commit -m "feat(data-api): implement user data retrieval endpoint
 - Add error handling for invalid user IDs
 - Update API documentation"
 
-# Push your work regularly
-git push origin feature/backend-lebron-user-data-api
+# Push your work regularly to your personal branch
+git push origin [YourName]
+
+# Example for Lebron:
+git push origin Lebron
 ```
 
 ### **End of Day (6:00 PM)**
@@ -110,7 +138,10 @@ git push origin feature/backend-lebron-user-data-api
 # Always push your work before leaving
 git add .
 git commit -m "wip: end of day commit - [brief description]"
-git push origin feature/backend-lebron-user-data-api
+git push origin [YourName]
+
+# Example for Ayton:
+git push origin Ayton
 ```
 
 ---
@@ -136,6 +167,21 @@ Examples:
 [HAYES] feat: Interactive dashboard charts
 [MARCUS] feat: Portfolio management interface
 [JJ] test: Add integration tests for auth flow
+```
+
+### **Creating PRs from Personal Branches**
+```bash
+# When ready to merge your work to develop
+# 1. Ensure your branch is up to date
+git checkout [YourName]
+git pull origin [YourName]
+git merge origin/develop
+
+# 2. Push any final changes
+git push origin [YourName]
+
+# 3. Create PR: [YourName] → develop
+# Use GitHub/GitLab interface to create PR from your branch to develop
 ```
 
 ### **PR Description Template**
@@ -173,14 +219,14 @@ Closes #[issue-number]
 
 ### **Review Assignments**
 ```
-Backend_Lebron PRs → Backend_Luka + Integration_JJ
-Backend_Luka PRs → Backend_Lebron + Integration_JJ
-Business_Austin PRs → Business_Rui + Integration_JJ
-Business_Rui PRs → Business_Austin + Integration_JJ
-FrontEnd_Ayton PRs → FrontEnd_Hayes + Integration_JJ
-FrontEnd_Hayes PRs → FrontEnd_Marcus + Integration_JJ
-FrontEnd_Marcus PRs → FrontEnd_Ayton + Integration_JJ
-Integration_JJ PRs → Backend_Lebron + FrontEnd_Ayton
+Lebron branch PRs → Luka + JJ
+Luka branch PRs → Lebron + JJ
+Austin branch PRs → Rui + JJ
+Rui branch PRs → Austin + JJ
+Ayton branch PRs → Hayes + JJ
+Hayes branch PRs → Marcus + JJ
+Marcus branch PRs → Ayton + JJ
+JJ branch PRs → Lebron + Ayton
 ```
 
 ### **Review Timeline**
