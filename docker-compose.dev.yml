@@ -1,0 +1,154 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database with enhanced configuration
+  postgres:
+    image: postgres:15-alpine
+    container_name: investment_app_postgres
+    environment:
+      POSTGRES_DB: investment_app
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --lc-collate=C --lc-ctype=C"
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/scripts:/docker-entrypoint-initdb.d
+      - ./database/backups:/backups
+    networks:
+      - investment_app_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d investment_app"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+    command: >
+      postgres
+      -c shared_preload_libraries=pg_stat_statements
+      -c pg_stat_statements.max=10000
+      -c pg_stat_statements.track=all
+      -c max_connections=200
+      -c shared_buffers=256MB
+      -c effective_cache_size=1GB
+      -c maintenance_work_mem=64MB
+      -c checkpoint_completion_target=0.9
+      -c wal_buffers=16MB
+      -c default_statistics_target=100
+
+  # Redis Cache with enhanced configuration
+  redis:
+    image: redis:7-alpine
+    container_name: investment_app_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+      - ./config/redis.conf:/usr/local/etc/redis/redis.conf
+    networks:
+      - investment_app_network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+    command: redis-server --appendonly yes --maxmemory 512mb --maxmemory-policy allkeys-lru
+    sysctls:
+      - net.core.somaxconn=1024
+
+  # Backend API with development optimizations
+  backend:
+    build:
+      context: ./backend
+      dockerfile: ../docker/Dockerfile.backend
+    container_name: investment_app_backend
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/investment_app
+      - REDIS_URL=redis://redis:6379
+      - CORS_ORIGINS=http://localhost:3000,http://127.0.0.1:3000
+      - DEBUG=true
+      - LOG_LEVEL=DEBUG
+      - PYTHONPATH=/app
+      - ALPHA_VANTAGE_API_KEY=${ALPHA_VANTAGE_API_KEY:-demo}
+      - YAHOO_FINANCE_API_KEY=${YAHOO_FINANCE_API_KEY:-}
+    ports:
+      - "8000:8000"
+      - "5678:5678"  # Debug port
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app
+      - ./UserModule:/app/modules/user
+      - ./PortfolioModule:/app/modules/portfolio
+      - ./DcfModule:/app/modules/dcf
+      - ./DataModule:/app/modules/data
+      - ./ReportModule:/app/modules/reports
+      - backend_cache:/app/.cache
+    networks:
+      - investment_app_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload --log-level debug
+
+  # Database Administration Tool
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: investment_app_pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@investment-app.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    networks:
+      - investment_app_network
+    profiles:
+      - tools
+
+  # Redis Commander for Redis management
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: investment_app_redis_commander
+    environment:
+      - REDIS_HOSTS=local:redis:6379
+    ports:
+      - "8081:8081"
+    depends_on:
+      - redis
+    networks:
+      - investment_app_network
+    profiles:
+      - tools
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  pgadmin_data:
+    driver: local
+  backend_cache:
+    driver: local
+
+networks:
+  investment_app_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
